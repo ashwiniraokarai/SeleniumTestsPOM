@@ -12,24 +12,48 @@ namespace POM
 {
     public class TestClass
     {
-        //What is your goal?
-        //Go to home page https://www.swtestacademy.com, click on "About" which in turn opens the About Page
-        //Go to About Page
-        //Click on Search magnifying glass icon (opens the search bar)
-        //Enter text in the Search input box. Pass the search string from here as an argument.
-        //Click the Search button (submits the search and open the Results page)
-        //In the Results page, click on the first result
+            /*
+            Know your test case in terms of “page”
+            •	Launch the home page > Click on About link
+            •	In the About Page,
+                    i.click on the universal search bar collapsed inside the search icon on the top menu
+                    ii.submit a search > results page opens
+            •	In the Results Page,
+                    i.click the click on the first search result link > article page opens
+            •	In the Article Page,
+                    i.Nothing to do. Simply validate you are in fact on the right page
+            */
 
         //Instantiate the webdriver. Remember Page Objects should depend on the Test Class to instantiate the driver. 
         //Test Class controls the driver and passes it back and forth between itself and the page objects to get its job done
-        
-        IWebDriver driver = new ChromeDriver();
 
+        //SetUp
+        IWebDriver driver;
+        readonly String searchText = "selenium c#";
+
+        [SetUp]
+        public void SetUp()
+        {
+            driver = new ChromeDriver();
+            driver.Manage().Window.Maximize();
+        }
+        
         [Test]
         public void Test()
         {
           HomePage homePage = new HomePage(driver);
+            homePage.Navigate();
+            AboutPage aboutPage = homePage.GoToAboutPage();
+            ResultPage resultPage = aboutPage.SubmitSearch(searchText);
+            resultPage.ClickOnFirstResult(searchText);
         }
-        
+
+        [TearDown]
+        public void TearDown()
+        {
+            driver.Close();
+            driver.Quit();
+        }
+
     }
 }
